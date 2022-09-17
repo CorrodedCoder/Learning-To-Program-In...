@@ -174,3 +174,9 @@ def wordcount_lines(lines):
     wordcounts = collections.Counter(tokenize_words(lines))
     return wordcounts.most_common()
 ```
+
+### Leverage the re module to handle tokenizing
+TBD
+
+### Leverage the argparse library to handle argument parsing and provide usage/help.
+TBD
