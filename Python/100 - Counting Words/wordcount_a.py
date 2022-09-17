@@ -1,7 +1,7 @@
 # Objective: count the number of unique words in a file, and the number of occurances of each of those words
 # This version aims to show the simplest to understand implementation of this and pays no attention to doing
 # things in the most efficient (or even the most sensible) way.
-# See wordcount_a.MD for a critique of the solution.
+# See wordcount.MD for a critique of the solution.
 
 # Import the sys module to provide access to command line arguments
 import sys
@@ -67,7 +67,7 @@ for word in words:
 # Create a list of pairs of word and count based on the dictionary items
 wordcount_list = wordcounts.items()
 
-# Use the "sorted" algoirth to produce a new list of pairs sorted in reverse order
+# Use the "sorted" algorithm to produce a new list of pairs sorted in reverse order
 # using the count element of each pair as a key.
 # (ignore the lambda syntax at this point, we are just telling the "sorted"
 # algorithm to sort the items based on the second element of each item,
