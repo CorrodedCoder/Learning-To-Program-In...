@@ -1,6 +1,6 @@
 # Objective: count the number of unique words in a file, and the number of occurances of each of those words
-# This version adds structure to the solution in the form of functions but
-# remains relatively simplistic.
+# This version improves memory use and efficiency by not maintaining large data structures in memory
+# and leveraging iterables and generators.
 # See wordcount.MD for a critique of the solution.
 
 ## Return a list of all words found in the lines of text provided
