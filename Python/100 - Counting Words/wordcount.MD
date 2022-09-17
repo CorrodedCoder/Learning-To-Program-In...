@@ -125,3 +125,5 @@ Becomes:
 ```
 wordcounts = count_words(tokenize_words(lines))
 ```
+
+The script wordcount_c.py contains for the changes described above.
