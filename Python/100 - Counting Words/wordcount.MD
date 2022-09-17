@@ -156,7 +156,7 @@ wordcounts = count_words(tokenize_words(lines))
 ```
 To:
 ```
-    wordcounts = collections.Counter(tokenize_words(lines))
+wordcounts = collections.Counter(tokenize_words(lines))
 ```
 But it gets even better! `collections.Counter` has a method called `most_common` which, from the python docs: Return a list of the n most common elements and their counts from the most common to the least.
 
