@@ -127,3 +127,50 @@ wordcounts = count_words(tokenize_words(lines))
 ```
 
 The script wordcount_c.py contains for the changes described above.
+
+# Critique of wordcount_c.py
+## The word count list is kept in memory
+There remains a theoretical risk of memory overuse with a large enough set of input data with enough words in it to cause us problems, but to solve this would require an entirely different approach involving persisting this information outside of memory, so we'll leave that problem as out of scope.
+
+## There are two copies of the word count list: the unsorted and the sorted
+This is true and could have been solved at the beginning by using the list `sort` method rather than the `sorted` function which returns a new list. So something like from this:
+```
+wordcount_list_sorted = sorted(wordcount_list, reverse=True, key=lambda pair: pair[1])
+```
+To:
+```
+wordcount_list.sort(reverse=True, key=lambda pair: pair[1])
+```
+Except... I haven't been entirely honest with you :( but honestly I was doing it for your benefit! Python has had two major release versions: 2 and 3. Python 2 is out of support so most of this is moot, but the code above works fine with python 2, but not with python 3 which would complain with the error `AttributeError: 'dict_items' object has no attribute 'sort'`. This is because although I've been telling you that wordcount_list was a list, it is actually only a list when running under python 2 and under python 3 it's a dict_items object which... well... it's complicated... it's a type of view but the thing to note is that it will iterate as needed and so there actually weren't two copies of the word count list under python 3 anyway.
+
+The better news is that we're actually going to change our solution in the next step in such a way that this is no longer going to be of concern.
+
+## We should be leveraging the python library modules instead of reinventing the wheel
+As always with modern languages with large frameworks of libraries included the challenge is as much what you aren't aware of as how you're writing your code. Best way to avoid bugs: don't write the code in the first place (Karate Kid reference).
+
+### Leverage the collections.Counter class
+collections.Counter object is, to quote from the python docs: a dict subclass for counting hashable objects.  
+Sounds like something we're already doing right? Yes, we can remove `count_words` from our solution and drop in replace it with `collections.Counter`. So from:
+```
+wordcounts = count_words(tokenize_words(lines))
+```
+To:
+```
+    wordcounts = collections.Counter(tokenize_words(lines))
+```
+But it gets even better! `collections.Counter` has a method called `most_common` which, from the python docs: Return a list of the n most common elements and their counts from the most common to the least.
+
+So that takes us from:
+```
+def wordcount_lines(lines):
+    wordcounts = collections.Counter(tokenize_words(lines))
+    wordcount_list = wordcounts.items()
+    wordcount_list_sorted = sorted(wordcount_list, reverse=True, key=lambda pair: pair[1])
+    return wordcount_list_sorted
+```
+To:
+```
+def wordcount_lines(lines):
+    wordcounts = collections.Counter(tokenize_words(lines))
+    return wordcounts.most_common()
+```
