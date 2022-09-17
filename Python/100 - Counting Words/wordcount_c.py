@@ -48,11 +48,8 @@ def count_words(words):
 
 ## Sort the words in decreasing order of frequency
 def wordcount_lines(lines):
-    ## All words found in the file contents will be added to a list
-    words = tokenize_words(lines)
-
-    ## We now have a list of all the words in the file so let's count them
-    wordcounts = count_words(words)
+    ## Tokenize the words contained in the text lines and count them
+    wordcounts = count_words(tokenize_words(lines))
 
     ## Sort the words in decreasing order of frequency
 
