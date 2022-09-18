@@ -20,13 +20,14 @@ if __name__ == '__main__':
 ```
 If this script is imported by any other, it will not execute the code inside the if statement.  
 
-The script wordcount_b.py contains for the changes described above.
+The script wordcount_b.py contains the changes described above.
 
 # Critique of wordcount_b.py
 The second incarnation of the script is already looking much better and specifically looking at the chief function of the script `wordcount_lines` we can hope that some person new to that code might have some vague idea of what we're trying to do:
 1. Tokenize words.
 2. Count words.
-3. Sort in descending order of counts
+3. Sort in descending order of counts.
+
 Also another developer may be able to leverage some or all of the functionality contained in this script by importing it and using the functionality it needs, or even just choose to display the information in a different format.  
 However there is still much which could be improved here.
 
@@ -126,7 +127,7 @@ Becomes:
 wordcounts = count_words(tokenize_words(lines))
 ```
 
-The script wordcount_c.py contains for the changes described above.
+The script wordcount_c.py contains the changes described above.
 
 # Critique of wordcount_c.py
 ## The word count list is kept in memory
@@ -180,3 +181,5 @@ TBD
 
 ### Leverage the argparse library to handle argument parsing and provide usage/help.
 TBD
+
+The script wordcount_d.py contains the changes described above.
