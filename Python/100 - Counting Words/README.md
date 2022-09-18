@@ -176,10 +176,62 @@ def wordcount_lines(lines):
     return wordcounts.most_common()
 ```
 
+### Leverage the argparse library to handle argument parsing and provide usage/help.
+We are handling input arguments to our script in a primitive way and whilst it works it doesn't do much more than output a single line of warning when the solution is invoked from the command line with anything other than a single parameter. It also doesn't validate that the file exists and can be opened, so if it cannot be then the end user gets an unhelpful stacktrace:
+```
+python wordcount_c.py not_exist.txt
+Traceback (most recent call last):
+  File "wordcount_c.py", line 86, in <module>
+    wordcount_list_sorted = wordcount_file(sys.argv[1])
+  File "wordcount_c.py", line 74, in wordcount_file
+    with open(filename, 'rt') as input:
+IOError: [Errno 2] No such file or directory: 'not_exist.txt'
+```
+A Python library to the rescue again this time in the form of the argparse module. This module can do more than just parse arguments as we'll see below as we change from:
+```
+import sys
+
+if len(sys.argv) != 2:
+    print('Usage: <filename>\n Where <filename> is the text file from which we will count the words')
+    exit()
+
+wordcount_list_sorted = wordcount_file(sys.argv[1])
+```
+To:
+```
+import argparse
+
+parser = argparse.ArgumentParser(description='Count occurances of each word in the input text')
+parser.add_argument('input', type=argparse.FileType('rt'))
+
+args = parser.parse_args()
+
+wordcount_list_sorted = wordcount_lines(args.input)
+```
+So the argument parser will accept a single input parameter which represents our input text filename and will attempt to open the file for reading when the script command line is parsed. This happens when `parser.parse_args()` is called and returns an object with a member named after the option name, `input` in our case.
+
+It will also generate help text for the end user when no arguments are specified or when `-h` is passed:
+```
+usage: wordcount_d.py [-h] input
+
+Count occurances of each word in the input text
+
+positional arguments:
+  input
+
+optional arguments:
+  -h, --help  show this help message and exit
+```
+
+We no longer need the wordcount_file function as it was only opening the file and calling wordcount_lines with the file object anyway.
+
+What happens if we pass in a filename which does not exist?
+```
+usage: wordcount_d.py [-h] input
+wordcount_d.py: error: argument input: can't open 'not_exist.txt': [Errno 2] No such file or directory: 'not_exist.txt'
+```
 ### Leverage the re module to handle tokenizing
 TBD
 
-### Leverage the argparse library to handle argument parsing and provide usage/help.
-TBD
 
 The script wordcount_d.py contains the changes described above.
