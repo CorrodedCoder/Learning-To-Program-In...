@@ -6,26 +6,17 @@ import collections
 
 ## Return a list of all words found in the lines of text provided
 def tokenize_words(lines):
-    # Loop through each line
     for line in lines:
-        # This string will keep track of characters found
-        word = ''
-        # Loop through each character in the line
-        for character in line:
-            # If the character is in the alphabet then add it to the word
-            if character.isalpha():
-                word += character
-            else:
-                # If the current character is not in the alphabet then
-                # add any preceding alphabetic characters as a word
-                if len(word) != 0:
-                    yield word
-                    # Prepare for the next word by resetting this to an empty string
-                    word = ''
-        # If the final characters in the text were not followed by whitespace
-        # then we need to be sure to include this final word.
-        if len(word) != 0:
-            yield word
+        # split the input line according to the regular expression criteria we specify:
+        #   \W is a metacharacter which means: match any one non-word character
+        #   + following the \W changes the meaning to match one or more non-word characters
+        # The `r` preceeding the string tells python this is a raw string and so not to interpret characters
+        # (such as the backslash) specially.
+        for word in re.split(r'\W+', line):
+            # The split will return empty strings where the start or end of the line has non word characters
+            # so we check we have a word with characters in it before yielding it
+            if word:
+                yield word
 
 
 ## Sort the words in decreasing order of frequency
