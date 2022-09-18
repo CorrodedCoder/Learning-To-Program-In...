@@ -263,5 +263,7 @@ def tokenize_words(lines):
             if word:
                 yield word
 ```
+The regular expression specifies will match one or more non word characters (i.e. anything other than alphabet characters) and use those matches to split up the line. If there are any non word characters at the start or the end of the line then we get empty strings returned so we only yield words that have characters in them.
+
 
 The script wordcount_d.py contains the changes described above.
