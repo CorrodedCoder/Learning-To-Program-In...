@@ -37,22 +37,20 @@ def wordcount_lines(lines):
     return wordcounts.most_common()
 
 
-def wordcount_file(filename):
-    # Open the file for reading
-    # Specify text mode so that the file object knows to make sense of line endings
-    with open(filename, 'rt') as input:
-        return wordcount_lines(input)
-
-
 if __name__ == '__main__':
-    # Import the sys module to provide access to command line arguments
-    import sys
+    # Import the argparse module to process command line options
+    import argparse
 
-    if len(sys.argv) != 2:
-        print('Usage: <filename>\n Where <filename> is the text file from which we will count the words')
-        exit()
+    # Create an argument parser object
+    parser = argparse.ArgumentParser(description='Count occurances of each word in the input text')
 
-    wordcount_list_sorted = wordcount_file(sys.argv[1])
+    # Add a single argument which will open the file for reading text
+    parser.add_argument('input', type=argparse.FileType('rt'))
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    wordcount_list_sorted = wordcount_lines(args.input)
 
     ## Output the list:
 
