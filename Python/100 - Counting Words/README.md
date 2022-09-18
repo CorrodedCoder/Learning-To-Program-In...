@@ -230,6 +230,12 @@ What happens if we pass in a filename which does not exist?
 usage: wordcount_d.py [-h] input
 wordcount_d.py: error: argument input: can't open 'not_exist.txt': [Errno 2] No such file or directory: 'not_exist.txt'
 ```
+
+One final benefit of specifying the parameter type as a file is that we can actually now use standard input (stdin) instead of specifying the filename by specifying a single hypen `-` parameter. So on Unix:  
+```cat sample.txt|python wordcount_d.py -```  
+And on Windows:  
+```type sample.txt|python wordcount_d.py -```  
+
 ### Leverage the re module to handle tokenizing
 TBD
 
