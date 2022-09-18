@@ -3,9 +3,9 @@ The solution addresses the objectives set out for it, but would almost certainly
 
 ## X = X + Y
 In cases where we are simply adding to an existing variable, whether that be incrementing a numeric value or adding a character to a string, we can use a shorthand syntax:  
-'word = word + character'  
+`word = word + character`  
 Can instead be expressed using a simpler notation:
-'word += character'  
+`word += character`  
 This is true for many operations across python.
 
 ## It's just a sequence of commands - there is no structure!
