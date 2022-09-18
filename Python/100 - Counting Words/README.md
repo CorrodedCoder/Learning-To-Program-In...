@@ -187,7 +187,7 @@ Traceback (most recent call last):
     with open(filename, 'rt') as input:
 IOError: [Errno 2] No such file or directory: 'not_exist.txt'
 ```
-A Python library to the rescue again this time in the form of the argparse module. This module can do more than just parse arguments as we'll see below as we change from:
+A Python library to the rescue again this time in the form of the `argparse` module. This module can do more than just parse arguments as we'll see below as we change from:
 ```
 import sys
 
@@ -223,7 +223,7 @@ optional arguments:
   -h, --help  show this help message and exit
 ```
 
-We no longer need the wordcount_file function as it was only opening the file and calling wordcount_lines with the file object anyway.
+We no longer need the wordcount_file function as it was only opening the file and calling `wordcount_lines` with the file object anyway.
 
 What happens if we pass in a filename which does not exist?
 ```
@@ -237,7 +237,31 @@ And on Windows:
 ```type sample.txt|python wordcount_d.py -```  
 
 ### Leverage the re module to handle tokenizing
-TBD
+Warning: this section involves regular expressions and if you aren't used to these then you might want to go and read a little about them elsewhere first. Put simply they are ways of using a syntax to specify patterns to be matched in strings.
 
+The `re` module will allow us to replace our `tokenize_words` function with a much shorter implementation, but it might not be very intuitive unless you are familiar with regular expression syntax. The original looked like this:
+```
+def tokenize_words(lines):
+    for line in lines:
+        word = ''
+        for character in line:
+            if character.isalpha():
+                word += character
+            else:
+                if len(word) != 0:
+                    yield word
+                    # Prepare for the next word by resetting this to an empty string
+                    word = ''
+        if len(word) != 0:
+            yield word
+```
+The replacement like this:
+```
+def tokenize_words(lines):
+    for line in lines:
+        for word in re.split(r'\W+', line):
+            if word:
+                yield word
+```
 
 The script wordcount_d.py contains the changes described above.
