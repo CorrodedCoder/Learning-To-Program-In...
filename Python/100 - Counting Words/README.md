@@ -280,5 +280,7 @@ Side note: In fact there are a schools of thought called Test Driven Development
 
 So how to test the behaviour of each function: leverage the python unittest module. In our case I'm going to write a separate script which is going to import our main script and test the functions individually:
 ```
+import unittest
+import wordcount_d
 
 ```
