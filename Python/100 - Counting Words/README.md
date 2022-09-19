@@ -13,7 +13,9 @@ Indeed, in many ways it is very similar to what one might see in a simple dos ba
 
 The other problem with the lack of structure is that another author might want to solve a similar problem and be able to leverage much of the functionality here but to do so they would need to copy and paste that shared code into their own script. This is usually what is known as a bad thing. Why? Bug's fixed in one may not be propogated into the other. The fact that most of the code is identical should be an aid as someone who has looked at the source of one should have a head start on the other, but because it has been copy pasted this is not possible to do with any confidence as many subtle changes may have been made.
 
-The most obvious solution to all of this is to add some structure in the form of functions and, to allow other scripts to use functions from our script, to follow a convention of only executing the full functionality of the script if it is the main script. This is accomplished in python like so:  
+The final problem is that in this form have to test the functionality it in its entirety. Whilst we can test that the script does what we think it does by comparing against prior output for a given input is correct (although this might throw some suprises when using different versions of python) what we cannot do is test individual parts of the script.
+
+The most obvious solution to all of this is to add some structure in the form of functions and, to allow other scripts to use functions from our script, to follow a convention of only executing the full functionality of the script if it is the launched script (the one passed to python). This is accomplished in like so:  
 ```
 if __name__ == '__main__':
   <your code follows>
@@ -267,3 +269,16 @@ The regular expression specifies will match one or more non word characters (i.e
 
 
 The script wordcount_d.py contains the changes described above.
+
+# Critique of wordcount_d.py
+The following criticisms are more about how I got from wordcount_a.py to wordcount_d.py than the code per se.
+
+## How do you know your changes worked?
+Well this is probably the biggest ommisions since we started: we haven't been checking that the behaviour has remained the same after we made each change. This would have been one of the most compelling reasons to move from the unstructured wordcount_a.py to the functions in wordcount_b.py as we would then have been able to start testing our functions in isolation of each other.
+
+Side note: In fact there are a schools of thought called Test Driven Development (TDD) and Test First Development (TFD) that would strongly encourage (mandate? religious warning!) that we write the test ahead of the bit of functionality/change we're making (there's more to it than this, but there are many excellent resources that would explain it better than I). In essence the chief benefit is that we think about problem from the user (API caller in our case) perspective rather than the implementors perspective. This can have benefits both in producing a more pleasing API for the end user, a more testable set of functionality because we have to think about how we can test this up front and can even save time in coding because we don't necessarily have to write code that we later realise we need to rewrite/throw-away. The approach is not beloved by all and it may work better in some cases than others, but I do recommend giving it a serious try to see some of the benefits.
+
+So how to test the behaviour of each function: leverage the python unittest module. In our case I'm going to write a separate script which is going to import our main script and test the functions individually:
+```
+
+```
