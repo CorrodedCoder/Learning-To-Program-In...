@@ -352,6 +352,21 @@ Well, that explains it - but what do we do about it? It's actually a little comp
 
 I decided to write a function which would walk through the list grouping the pairs sharing the same word count using `itertools.groupby` and then using `sorted` on each group of pairs, finally reassembling the list or word, count pairs. By passing both the output from `wordcount_lines` and the expected results through this function, we can then allow the `unittest.assertEqual` to do its work on these. This is only needed for python 2 so let's leave python 3 to work as it usually does, by detecting the python version and providing a passthrough implementation in python 3:
 ```
+import itertools
+import operator
+
+def reorder(wordcounts):
+    return list(wordcount for _, group in itertools.groupby(wordcounts, key=operator.itemgetter(1)) for wordcount in sorted(group))
+```
+Note: I haven't mentioned any of the following yet so you'll either have to take my word for it or start reading the python documentation:
+1. `itertools.groupby`
+2. `operator.itemgetter`
+3. Using the convention of a single underscore as throwaway variable
+4. A list comprehension.
+5. A double for loop list comprehension
+
+Finally, note that we only need the alternative approach for comparisons when using python 2 so let's use the python interpreter version to decide to use this implementation for python 2 and a dummy passthrough implementation for python 3:
+```
 if sys.version_info.major == 2:
     import itertools
     import operator
@@ -362,8 +377,6 @@ else:
     def reorder(wordcounts):
         return wordcounts
 ```
-Note: I haven't mentioned `itertools.groupby`, `operator.itemgetter` or list comprehensions yet let alone a double for loop list comprehension - so you'll either have to take my word for it or start reading the python documentation!
-
-Note: the mechanism above of using the python version to choose an alternate implementation of a function demonstrates a very powerful feature of python being a dynamic language which can make powerful implementation decisions even at runtime, albeit in this case the version of python is unlikely to change during the run of our program :)
+Note: the mechanism of using some criteria to choose an alternate definition of a function demonstrates a very powerful feature of pythons dynamic nature allowing it to make powerful implementation decisions even at runtime.
 
 The script test_wordcount_d.py contains the changes described above.
