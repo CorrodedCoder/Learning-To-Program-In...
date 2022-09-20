@@ -405,11 +405,11 @@ py -2 -m timeit -s "from wordcount_d import wordcount_lines" "wordcount_lines(op
 ```
 | Script | Python | Result | Output |
 | --- | --- | --- | --- |
-| wordcount_b | 2 |  |  |
+| wordcount_b | 2 | 62.5s | `1 loops, best of 5: 62.5 sec per loop` |
 | wordcount_b | 3 | 66.1s | `1 loop, best of 5: 66.1 sec per loop` |
-| wordcount_c | 2 |  |  |
+| wordcount_c | 2 | 59.4s | `1 loops, best of 5: 59.4 sec per loop` |
 | wordcount_c | 3 | 64.4s | `1 loop, best of 5: 64.4 sec per loop` |
-| wordcount_d | 2 |  |  |
+| wordcount_d | 2 | 49.9s | `1 loops, best of 5: 49.9 sec per loop` |
 | wordcount_d | 3 | 38.7s | `1 loop, best of 5: 38.7 sec per loop` |
 
-(note that I also passed the options `-n 1 -r 5` to Python 2 invocations so that they didn't take so long :)
+(note that I also passed the options `-n 1 -r 5` to Python 2 invocations so that they didn't take so long :smiley: )
