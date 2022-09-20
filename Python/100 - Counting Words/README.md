@@ -379,4 +379,37 @@ else:
 ```
 Note: the mechanism of using some criteria to choose an alternate definition of a function demonstrates a very powerful feature of pythons dynamic nature allowing it to make powerful implementation decisions even at runtime.
 
+## Why did you make performance/memory improvements without measuring first?
+Another great question! One of the great wisdom sayings when it comes to optmisation is "measure first" and anyone who's spent a long time optimising a code only to discover that they were optimising the wrong thing will have learned this the hard way!
+
+In my case I was trying to show the logically efficient thing to do but really more focussing on just being able to handle large bodies of text, but nevertheless it would have been a good idea to measure time and memory usage as we made changes.
+
+Python has a number of ways to do this from full profilers through to the relatively simple `timeit` module which is really tuned for benchmarking small snippets of code and can either be used directly in a script as we have with other modules or can be invoked from the command line with a snippet of code.
+
+I ran it as follows as it allows me to choose which version of python to use and which script to use:  
+`py -3 -m timeit -s "from wordcount_d import wordcount_lines" "wordcount_lines(open('article-urls.txt', 'rt', encoding='utf-8'))"`  
+The breakdown is:
+1. `py`: the common launcher (well, more common on Windows than Unix in my experience)
+2. `-3`: the version of python for the common launcher to pick, `-2` for python 2. If you aren't using the common launcher then skip this argument.
+3. `-s "<code>"`: optional setup code to be used to prepare ahead of running the test, but not included in the measurements.
+4. `"<code>"`: code to be benchmarked.
+
+When running under python 3 on Windows we need to pass the encoding as utf-8 if we expect characters that are not in the command prompt's language codepage (which is much too complicated to go into here... possibly ever...).
+
+I chose a corpus of text which is around 265MB long in order to give our code enough work to do to get something vaguely helpful to see the difference. The output from the above command looked like this on my system:
+```
+py -3 -m timeit -s "from wordcount_d import wordcount_lines" "wordcount_lines(open('article-urls.txt', 'rt', encoding='utf-8'))"
+1 loop, best of 5: 37.8 sec per loop
+py -2 -m timeit -s "from wordcount_d import wordcount_lines" "wordcount_lines(open('article-urls.txt', 'rt'))"
+10 loops, best of 3: 49.8 sec per loop
+```
+| Script | Python | Result | Output |
+| --- | --- | --- | --- |
+| wordcount_b | 2 |  |  |
+| wordcount_b | 3 | 66.1s | `1 loop, best of 5: 66.1 sec per loop` |
+| wordcount_c | 2 |  |  |
+| wordcount_c | 3 | 64.4s | `1 loop, best of 5: 64.4 sec per loop` |
+| wordcount_d | 2 |  |  |
+| wordcount_d | 3 | 38.7s | `1 loop, best of 5: 38.7 sec per loop` |
+
 The script test_wordcount_d.py contains the changes described above.
