@@ -283,4 +283,87 @@ So how to test the behaviour of each function: leverage the python unittest modu
 import unittest
 import wordcount_d
 
+class TestTokenizeWords(unittest.TestCase):
+    def test_single_line(self):
+        self.assertEqual(list(wordcount_d.tokenize_words(["My name is, my name is, my name is... Skinny Shadowy!"])),
+            ['My', 'name', 'is', 'my', 'name', 'is', 'my', 'name', 'is', 'Skinny', 'Shadowy'])
+
+    def test_leading_and_trailing_nonwords(self):
+        self.assertEqual(list(wordcount_d.tokenize_words([".one two, three,"])),
+            ['one', 'two', 'three'])
+
+class TestWordcountLines(unittest.TestCase):
+    def test_single_line(self):
+        self.assertSequenceEqual(wordcount_d.wordcount_lines([
+            "Mango, Mango, Banana, Mango, Banana, Apple",
+            ]), [('Mango', 3), ('Banana', 2), ('Apple', 1)])
+
+    def test_single_line2(self):
+        self.assertSequenceEqual(wordcount_d.wordcount_lines([
+            "My name is, my name is, my name is... Skinny Shadowy!",
+            ]), [('name', 3), ('is', 3), ('my', 2), ('My', 1), ('Skinny', 1), ('Shadowy', 1)])
+
+    def test_multiple_lines(self):
+        self.assertSequenceEqual(wordcount_d.wordcount_lines([
+            "There ", "can,", " be ", " only", "one!", ""
+            ]), [('There', 1), ('can', 1), ('be', 1), ('only', 1), ('one', 1)])
+
+if __name__ == '__main__':
+    unittest.main()
 ```
+In the case of `tokenize_words` it returns a generator so wrapping it in a `list()` causes it to populate a list from that generator which we can then use to compare with the expected outcome.
+
+Running the above script under python 3 yields this kind of outcome:
+```
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.001s
+
+OK
+```
+Strangely running the same under python 2 doesn't end so well:
+```
+..F..
+======================================================================
+FAIL: test_multiple_lines (__main__.TestWordcountLines)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "test_wordcount.py", line 30, in test_multiple_lines
+    ]), [('There', 1), ('can', 1), ('be', 1), ('only', 1), ('one', 1)])
+AssertionError: Sequences differ: [('be', 1), ('only', 1), ('The... != [('There', 1), ('can', 1), ('b...
+
+First differing element 0:
+('be', 1)
+('There', 1)
+
+- [('be', 1), ('only', 1), ('There', 1), ('can', 1), ('one', 1)]
++ [('There', 1), ('can', 1), ('be', 1), ('only', 1), ('one', 1)]
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.002s
+
+FAILED (failures=1)
+```
+The order is different for words sharing the same count! This was not a requirement for the algorithm so it's more of a test problem, but to understand why it's different between python 2 and 3 we need to look at the documentation for `collections.Counter.most_common()' which says:
+1. Python 2: Elements with equal counts are ordered arbitrarily
+2. Python 3: Elements with equal counts are ordered in the order first encountered
+
+Well, that explains it - but what do we do about it? It's actually a little complex to resolve because a lot of the preprocessing of the answer (such as sorting first by word and then by count) would hide any issues in our algorithm. Whatever we do we also only need to do it in python 2 as well. We could replace the comparison with our own helper function that compares the way we expect, but if it doesn't match then the test won't show all the helpful `unittest` output which shows you exactly what differs.
+
+I decided to write a function which would walk through the list grouping the pairs sharing the same word count using `itertools.groupby` and then using `sorted` on each group of pairs, finally reassembling the list or word, count pairs. By passing both the output from `wordcount_lines` and the expected results through this function, we can then allow the `unittest.assertEqual` to do its work on these. This is only needed for python 2 so let's leave python 3 to work as it usually does, by detecting the python version and providing a passthrough implementation in python 3:
+```
+if sys.version_info.major == 2:
+    import itertools
+    import operator
+
+    def reorder(wordcounts):
+        return list(wordcount for _, group in itertools.groupby(wordcounts, key=operator.itemgetter(1)) for wordcount in sorted(group))
+else:
+    def reorder(wordcounts):
+        return wordcounts
+```
+Note: I haven't mentioned `itertools.groupby`, `operator.itemgetter` or list comprehensions yet let alone a double for loop list comprehension - so you'll either have to take my word for it or start reading the python documentation!
+
+Note: the mechanism above of using the python version to choose an alternate implementation of a function demonstrates a very powerful feature of python being a dynamic language which can make powerful implementation decisions even at runtime, albeit in this case the version of python is unlikely to change during the run of our program :)
+
+The script test_wordcount_d.py contains the changes described above.
