@@ -412,4 +412,4 @@ py -2 -m timeit -s "from wordcount_d import wordcount_lines" "wordcount_lines(op
 | wordcount_d | 2 |  |  |
 | wordcount_d | 3 | 38.7s | `1 loop, best of 5: 38.7 sec per loop` |
 
-The script test_wordcount_d.py contains the changes described above.
+(note that I also passed the options `-n 1 -r 5` to Python 2 invocations so that they didn't take so long :)
